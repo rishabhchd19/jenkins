@@ -9,23 +9,23 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        bat 'docker build -t rishabhchd19/jenkin-alpine:latest .'
+        sh 'docker build -t rishabhchd19/jenkin-alpine:latest ./dockerhub-noplugin'
       }
     }
     stage('Login') {
       steps {
-        bat 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
       }
     }
     stage('Push') {
       steps {
-        bat 'docker push rishabhchd19/jenkin-alpine:latest'
+        sh 'docker push rishabhchd19/jenkin-alpine:latest'
       }
     }
   }
   post {
     always {
-      bat 'docker logout'
+      sh 'docker logout'
     }
   }
 }
