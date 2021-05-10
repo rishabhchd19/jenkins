@@ -1,5 +1,10 @@
 pipeline {
     agent any
+	tools {
+	maven 'Default'
+	jdk 'Default'
+	}
+	
     stages {
         stage('Build Application') {
             steps {
@@ -20,17 +25,20 @@ pipeline {
                 sh "docker build ./java-tomcat-sample-docker -t rishabhchd19/tomcatsample:${env.BUILD_ID}"
             }
         }
+		
 		stage('Login Dockerhub') {
 			steps {
 			sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
 			}
 		}
+		
 		stage('Push Image to Dockerhub') {
 			steps {
         sh 'docker push rishabhchd19/tomcatsample:${env.BUILD_ID}'
 			}
 		}
 	}
+	
 	post {
 		always {
 		sh 'docker logout'
