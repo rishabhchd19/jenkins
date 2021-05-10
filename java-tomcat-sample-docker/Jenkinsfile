@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build Application') {
             steps {
-                sh 'mvn -f java-tomcat-sample/pom.xml clean package'
+                sh 'mvn -f java-tomcat-sample-docker/pom.xml clean package'
             }
             post {
                 success {
@@ -20,14 +20,14 @@ pipeline {
                 sh "docker build ./java-tomcat-sample-docker -t rishabhchd19/tomcatsample:${env.BUILD_ID}"
             }
         }
-		stage('Login') {
+		stage('Login Dockerhub') {
 			steps {
 			sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
 			}
 		}
-		stage('Push') {
+		stage('Push Image to Dockerhub') {
 			steps {
-        sh 'docker push rishabhchd19/jenkin-alpine:latest'
+        sh 'docker push rishabhchd19/tomcatsample:${env.BUILD_ID}'
 			}
 		}
 	}
