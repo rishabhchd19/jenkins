@@ -27,14 +27,17 @@ pipeline {
         }
 		
 		stage('Login Dockerhub') {
+		    environment {
+                DOCKER_CRED = credentials('rishabhchd19-dockerhub')
+            }
 			steps {
-			sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			sh 'echo $DOCKER_CRED_PSW | docker login --username $DOCKER_CRED_USR --password-stdin'
 			}
 		}
 		
 		stage('Push Image to Dockerhub') {
 			steps {
-        sh 'docker push rishabhchd19/tomcatsample:${env.BUILD_ID}'
+        sh "docker push rishabhchd19/tomcatsample:${env.BUILD_ID}"
 			}
 		}
 	}
